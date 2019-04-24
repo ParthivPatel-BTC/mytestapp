@@ -1,12 +1,13 @@
 # config valid only for current version of Capistrano
-lock "3.7.1"
+lock "3.11.0"
 
 set :application,     'mytestapp'
 server '52.221.189.60', roles: [:web, :app, :db], primary: true
-set :repo_url,        'git@gitlab.com:nirat_patel/vendaxoproduction.git'
+set :repo_url,        'git@github.com:ParthivPatel-BTC/mytestapp.git'
 set :user,            'ubuntu'
 set :branch,           'master'
 set :deploy_to,       "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
+set :ssh_options,    { forward_agent: true, user: fetch(:user), keys: %w(~/.ssh/id_new_rsa) }
 set :stage,           :production
 set :rails_env,       :production
 set :pty,             false
@@ -28,7 +29,7 @@ namespace :puma do
     end
   end
 
-  before :start, :make_dirs
+  #before :start, :make_dirs
 end
 
 namespace :deploy do
@@ -138,6 +139,7 @@ namespace :rails do
     exec "ssh -l #{host.user} #{host.hostname} -p #{host.port || 22} -t '#{command}'"
   end
 end
+
 
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
